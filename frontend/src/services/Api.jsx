@@ -2,7 +2,7 @@ import axios from "axios";
 
 // const BASE_URL = "https://workspace-kwgy.onrender.com/api";
 
-const BASE_URL=const BASE_URL ="https://workspace-2-xupy.onrender.com/api";
+const BASE_URL="https://workspace-2-xupy.onrender.com/api";
 
 
 export const signup = async (data) => {
