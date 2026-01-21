@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// const BASE_URL = "https://workspace-kwgy.onrender.com/api";
 
-const BASE_URL="https://workspace-2-xupy.onrender.com/api";
+const BASE_URL = import.meta.env.VITE_API_URL;  // ya production URL set karo
 
 
 export const signup = async (data) => {
