@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api";
+// const BASE_URL = "https://workspace-kwgy.onrender.com/api";
+
+const BASE_URL= "http://localhost:3000/api"
+
 
 export const signup = async (data) => {
   try {

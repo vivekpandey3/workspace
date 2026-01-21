@@ -5,14 +5,14 @@ import {
   getWorkspace,
   updateWorkspace,
   deleteWorkspace,
-  addMember, // ✅ make sure you have this API function
+  addMember,
 } from "../services/Api";
 
 export default function Dashboard() {
   const { token, logout } = useContext(AuthContext);
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newMemberEmail, setNewMemberEmail] = useState(""); // 🔹 state for manual add
+  const [newMemberEmail, setNewMemberEmail] = useState("");
   const navigate = useNavigate();
 
   // Fetch Workspaces
@@ -41,7 +41,7 @@ export default function Dashboard() {
       setWorkspaces((prev) =>
         prev.map((ws) =>
           ws._id === id
-            ? { ...ws, name: res.name || newName.trim() } // only update name
+            ? { ...ws, name: res.name || newName.trim() }
             : ws
         )
       );
@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
   };
 
-  // 🔹 Manual Member Add
+  // Manual Member Add
   const handleAddMember = async (workspaceId) => {
     if (!newMemberEmail.trim()) return alert("Enter user ID or email");
 
@@ -74,7 +74,7 @@ export default function Dashboard() {
       const res = await addMember(workspaceId, newMemberEmail.trim(), token);
       alert(res.msg || "Member added successfully");
       fetchWorkspaces();
-      setNewMemberEmail(""); // reset input
+      setNewMemberEmail("");
     } catch (err) {
       console.error(err);
       alert(err.msg || "Failed to add member");
@@ -118,53 +118,73 @@ export default function Dashboard() {
         ) : (
           <ul className="grid gap-4">
             {workspaces.map((ws) => (
-              
               <li
                 key={ws._id}
-                
-                className="bg-gray-800 p-4 rounded-xl shadow hover:-translate-y-0.5 hover:shadow-md transition"
+                className="bg-gray-800 p-6 rounded-xl shadow hover:-translate-y-0.5 hover:shadow-md transition"
               >
-                <p>
+                {/* Company Name */}
+                <p className="text-lg">
                   <strong>Company:</strong> {ws.name}
                 </p>
 
-                <p className="mt-1">
-                  <strong>Owner:</strong> {ws.owner?.email || "N/A"}
+                {/* Owner */}
+                <p className="mt-2">
+                  <strong>Owner:</strong> {ws.owner || "N/A"}
                 </p>
 
-                <p className="mt-1">
-                  <strong>Members ({ws.members?.length || 0}):</strong>{" "}
-                  {ws.members?.length ? ws.members.map((m) => m.email).join(", ") : "No members"}
-                </p>
+                {/* Members - Card Style */}
+                <div className="mt-4">
+                  <strong className="block mb-3 text-gray-300">
+                    Members ({ws.members?.length || 0}):
+                  </strong>
+                  {ws.members?.length ? (
+                    <div className="space-y-2">
+                      {ws.members.map((m, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition"
+                        >
+                          <span className="text-gray-200">{m.email || "Unknown"}</span>
+                          <span className="text-xs px-3 py-1 bg-blue-500 rounded-full font-semibold">
+                            {m.role || "MEMBER"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 ml-2">No members</p>
+                  )}
+                </div>
 
-                {/* 🔹 Manual Member Add */}
-                <div className="mt-3 flex gap-2">
+                {/* Manual Member Add */}
+                <div className="mt-4 flex gap-2">
                   <input
                     type="text"
-                    placeholder="User ID or email"
+                    placeholder="Enter email to add member"
                     value={newMemberEmail}
                     onChange={(e) => setNewMemberEmail(e.target.value)}
-                    className="flex-1 p-2 rounded bg-gray-700 text-white"
+                    className="flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                   />
                   <button
                     onClick={() => handleAddMember(ws._id)}
-                    className="px-3 py-2 bg-green-500 rounded hover:bg-green-600 transition"
+                    className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 transition font-semibold"
                   >
                     Add Member
                   </button>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex gap-2 mt-4">
                   <button
                     onClick={() => handleEdit(ws._id, ws.name)}
-                    className="px-3 py-1 bg-yellow-500 text-black rounded hover:bg-yellow-600 transition"
+                    className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-600 transition font-semibold"
                   >
                     Edit
                   </button>
 
                   <button
                     onClick={() => handleDelete(ws._id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition font-semibold"
                   >
                     Delete
                   </button>
